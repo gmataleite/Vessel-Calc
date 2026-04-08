@@ -5,9 +5,9 @@ using UnitsNet.Units;
 
 internal class CircumferentialThinShellCalculator : ShellCalculatorBase
 {
-    public override Length CalculateThickness(Pressure p, Length r, Pressure s, double e)
+    public override Length CalculateThickness(Pressure effectivePressure, Length internalRadius, Pressure allowableStress, double jointEfficiency)
     {
-        var (P, R, S, E) = GetConstants(p, r, s, e);
+        var (P, R, S, E) = GetConstants(effectivePressure, internalRadius, allowableStress, jointEfficiency);
 
         double thickness = (P * R) / ((S * E) - (0.6 * P));
         

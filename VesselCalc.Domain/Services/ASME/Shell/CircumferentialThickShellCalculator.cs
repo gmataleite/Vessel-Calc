@@ -5,13 +5,13 @@ using UnitsNet.Units;
 
 internal class CircumferentialThickShellCalculator : ShellCalculatorBase
 {
-    public override Length CalculateThickness(Pressure p, Length r, Pressure s, double e)
+    public override Length CalculateThickness(Pressure effectivePressure, Length internalRadius, Pressure allowableStress, double jointEfficiency)
     {
-        var (P, R, S, E) = GetConstants(p, r, s, e);
+        var (P, R, S, E) = GetConstants(effectivePressure, internalRadius, allowableStress, jointEfficiency);
 
-        double z = (S * E + P) / (S * E - P);
+        double Z = (S * E + P) / (S * E - P);
         
-        double thickness = R * (Math.Sqrt(z) - 1);
+        double thickness = R * (Math.Sqrt(Z) - 1);
 
         return Length.FromMillimeters(thickness);
     }

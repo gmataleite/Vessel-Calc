@@ -3,17 +3,17 @@ namespace VesselCalc.Domain;
 using UnitsNet;
 using UnitsNet.Units;
 
-public abstract class ShellCalculatorBase : IThicknessCalculator
+public abstract class ShellCalculatorBase : IShellThicknessCalculator
 {
-    protected (double p, double r, double s, double e) GetConstants(Pressure effectivePressure, Length internalRadius, Pressure allowableStress, double jointEfficiency)
+    protected (double P, double R, double S, double E) GetConstants(Pressure effectivePressure, Length internalRadius, Pressure allowableStress, double jointEfficiency)
     {
         return (
-            effectivePressure.Pascals, 
-            internalRadius.Millimeters, 
-            allowableStress.Pascals, 
+            effectivePressure.Pascals,
+            internalRadius.Millimeters,
+            allowableStress.Megapascals,
             jointEfficiency
         );
     }
-    public abstract Length CalculateThickness(Pressure p, Length r, Pressure s, double e);
+    public abstract Length CalculateThickness(Pressure effectivePressure, Length internalRadius, Pressure allowableStress, double jointEfficiency);
 
 }
