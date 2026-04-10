@@ -8,7 +8,7 @@ public abstract class ShellCalculatorBase : IShellThicknessCalculator
     protected (double P, double R, double S, double E) GetConstants(Pressure effectivePressure, Length internalRadius, Pressure allowableStress, double jointEfficiency)
     {
         return (
-            effectivePressure.Pascals,
+            effectivePressure.Megapascals,
             internalRadius.Millimeters,
             allowableStress.Megapascals,
             jointEfficiency
