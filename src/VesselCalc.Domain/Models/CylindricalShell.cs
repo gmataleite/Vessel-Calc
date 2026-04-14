@@ -1,6 +1,7 @@
 ﻿namespace VesselCalc.Domain;
 
 using VesselCalc.Domain.Constants;
+using VesselCalc.Domain.Common;
 
 using UnitsNet;
 using UnitsNet.Units;
@@ -19,6 +20,13 @@ public class CylindricalShell
 
     public CylindricalShell(Pressure designPressure, Length internalDiameter, Pressure allowableStress, Length allowableCorrosion, double jointEfficiency, Pressure fluidColumnPressure)
     {
+        Guard.AgainstNegativeOrZero(designPressure, nameof(designPressure));
+        Guard.AgainstNegativeOrZero(internalDiameter, nameof(internalDiameter));
+        Guard.AgainstNegativeOrZero(allowableStress, nameof(allowableStress));
+        Guard.AgainstNegative(allowableCorrosion, nameof(allowableCorrosion));
+        Guard.AgainstNegative(fluidColumnPressure, nameof(fluidColumnPressure));
+        Guard.AgainstInvalidJointEfficiency(jointEfficiency, nameof(jointEfficiency));
+
         _designPressure = designPressure;
         _internalDiameter = internalDiameter;
         _allowableStress = allowableStress;
@@ -32,14 +40,13 @@ public class CylindricalShell
     {
     }
 
-    public Length CalculateMinimumRequiredThickness()
+    public Length CalculateMinimumRequiredThickness() // ASME VIII: UG-27
     {
         if (EffectivePressure >= _allowableStress * _jointEfficiency)
         {
             throw new InvalidOperationException("A pressão efetiva é maior ou igual à tensão admissível da junta (P >= SE). O dimensionamento por teoria elástica sob o ASME VIII Div. 1 é fisicamente impossível para estes parâmetros.");
         }
 
-        // ASME VIII: UG-27
         Length circumferentialThickness = CalculateThicknessForStressType(StressType.Circumferential);
         Length longitudinalThickness = CalculateThicknessForStressType(StressType.Longitudinal);
 

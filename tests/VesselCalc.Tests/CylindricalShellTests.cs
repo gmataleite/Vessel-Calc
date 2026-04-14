@@ -76,4 +76,63 @@ public class CylindricalShellTests
         var exception = Assert.Throws<InvalidOperationException>(() => shell.CalculateMinimumRequiredThickness());
         Assert.Contains("P >= SE", exception.Message);
     }
+
+
+    public static IEnumerable<object[]> InvalidShellTestData => new List<object[]>
+    {
+        // CENÁRIO 1: Pressão Negativa (P < 0)
+        new object[] { -2.0, 2000.0, 138.0, 3.0, 1.0, 0.0, "maior que zero" },
+
+        // CENÁRIO 2: Diâmetro Interno Negativo (D < 0)
+        new object[] { 2.0, -2000.0, 138.0, 3.0, 1.0, 0.0, "maior que zero" },
+
+        // CENÁRIO 3: Pressão Admissível Negativa (S < 0)
+        new object[] { 2.0, 2000.0, -138.0, 3.0, 1.0, 0.0, "maior que zero" },
+
+        // CENÁRIO 4: Corrosão Admissível Negativa (CA < 0)
+        new object[] { 2.0, 2000.0, 138.0, -3.0, 1.0, 0.0, "não pode ser negativo" },
+
+        // CENÁRIO 5: Eficiência de Junta Inválida (E < 0 ou E > 1)
+        new object[] { 2.0, 2000.0, 138.0, 3.0, -0.1, 0.0, "A eficiência de junta (E) deve estar entre 0 e 1.0" },
+        new object[] { 2.0, 2000.0, 138.0, 3.0, 1.1, 0.0, "A eficiência de junta (E) deve estar entre 0 e 1.0" },
+
+        // CENÁRIO 6: Pressão de Coluna de Fluido Negativa (P_fluido < 0)
+        new object[] { 2.0, 2000.0, 138.0, 3.0, 1.0, -0.1, "não pode ser negativo" }
+    
+    };
+
+    [Theory]
+    [MemberData(nameof(InvalidShellTestData))]
+
+    public void Constructor_InvalidParameters_ShouldThrowArgumentOutOfRangeException(
+        double designPressureMpa,
+        double internalDiameterMillimeters,
+        double allowableStressMpa,
+        double allowableCorrosionMillimeters,
+        double jointEfficiency,
+        double fluidColumnPressureMpa,
+        string expectedExceptionMessagePart)
+        {
+        // Arrange
+        var designPressure = Pressure.FromMegapascals(designPressureMpa);
+        var internalDiameter = Length.FromMillimeters(internalDiameterMillimeters);
+        var allowableStress = Pressure.FromMegapascals(allowableStressMpa);
+        var allowableCorrosion = Length.FromMillimeters(allowableCorrosionMillimeters);
+        var fluidColumnPressure = Pressure.FromMegapascals(fluidColumnPressureMpa);
+
+
+        // Act & Assert
+        var exception = Assert.Throws<ArgumentOutOfRangeException>(() => 
+        new CylindricalShell(
+            designPressure,
+            internalDiameter,
+            allowableStress,
+            allowableCorrosion,
+            jointEfficiency,
+            fluidColumnPressure)
+        );
+        
+        Assert.Contains(expectedExceptionMessagePart, exception.Message);
+    }
+
 }
