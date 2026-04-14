@@ -11,7 +11,7 @@ public static class Guard
             throw new ArgumentOutOfRangeException(parameterName, $"O valor de {parameterName} deve ser estritamente maior que zero.");
     }
 
-    public static void AgainstNegativeOrZero(Length value, string parameterName)
+    public static void AgainstNegativeOrZero(Length? value, string parameterName)
     {
         if (value <= Length.Zero)
             throw new ArgumentOutOfRangeException(parameterName, $"O valor de {parameterName} deve ser estritamente maior que zero.");

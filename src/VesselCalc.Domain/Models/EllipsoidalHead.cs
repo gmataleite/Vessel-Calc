@@ -19,6 +19,9 @@ public class EllipsoidalHead
 
     public EllipsoidalHead(Pressure designPressure, Length internalDiameter, Pressure allowableStress, Length allowableCorrosion, double jointEfficiency, Pressure fluidColumnPressure, Length? headHeight = null, double? factorK = null)
     {
+        // TODO:[Business Rule] Validar se h > D.
+        // throw new ArgumentOutOfRangeException(nameof(headHeight), "Altura não pode ser maior que o diâmetro");
+
         Guard.AgainstNegativeOrZero(designPressure, nameof(designPressure));
         Guard.AgainstNegativeOrZero(internalDiameter, nameof(internalDiameter));
         Guard.AgainstNegativeOrZero(allowableStress, nameof(allowableStress));
@@ -27,7 +30,7 @@ public class EllipsoidalHead
         Guard.AgainstInvalidJointEfficiency(jointEfficiency, nameof(jointEfficiency));
 
         if (headHeight.HasValue) 
-            Guard.AgainstNegativeOrZero(headHeight.Value, nameof(headHeight));
+            Guard.AgainstNegativeOrZero(headHeight, nameof(headHeight));
 
         _designPressure = designPressure;
         _internalDiameter = internalDiameter;
@@ -38,10 +41,13 @@ public class EllipsoidalHead
 
         _headHeight = headHeight ?? (internalDiameter / 4.0);
         
+        if (factorK.HasValue && headHeight.HasValue)
+            factorK = null; 
+
         _factorK = factorK ?? CalculateFactorK(_headHeight, _internalDiameter);
     }
 
-    public Length CalculateMinimumRequiredThickness() // ASME VIII: UG-32(c)
+    public Length CalculateMinimumRequiredThickness() // ASME VIII Div. 1, Appendix 1
     {
         double P = EffectivePressure.Megapascals;
         double D = _internalDiameter.Millimeters;
@@ -54,7 +60,7 @@ public class EllipsoidalHead
         return Length.FromMillimeters(thickness) + _allowableCorrosion;
     }
 
-    private double CalculateFactorK(Length headHeight, Length internalDiameter)
+    private double CalculateFactorK(Length headHeight, Length internalDiameter) 
     {
         double D = internalDiameter.Millimeters;
         double H = headHeight.Millimeters;

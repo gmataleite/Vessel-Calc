@@ -3,7 +3,7 @@ namespace VesselCalc.Domain;
 using UnitsNet;
 using UnitsNet.Units;
 
-internal class CircumferentialThinShellCalculator : ShellCalculatorBase // ASME VIII: UG-27(c-1)
+internal class CircumferentialThinShellCalculator : ShellCalculatorBase // ASME VIII Div. 1, UG-27(c-1)
 {
     public override Length CalculateThickness(Pressure effectivePressure, Length internalRadius, Pressure allowableStress, double jointEfficiency)
     {

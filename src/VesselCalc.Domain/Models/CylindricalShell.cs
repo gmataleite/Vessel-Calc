@@ -18,7 +18,13 @@ public class CylindricalShell
     private Pressure EffectivePressure => _designPressure + _fluidColumnPressure;
     private Length InternalRadius => _internalDiameter / 2;
 
-    public CylindricalShell(Pressure designPressure, Length internalDiameter, Pressure allowableStress, Length allowableCorrosion, double jointEfficiency, Pressure fluidColumnPressure)
+    public CylindricalShell(
+        Pressure designPressure, 
+        Length internalDiameter, 
+        Pressure allowableStress, 
+        Length allowableCorrosion, 
+        double jointEfficiency, 
+        Pressure fluidColumnPressure)
     {
         Guard.AgainstNegativeOrZero(designPressure, nameof(designPressure));
         Guard.AgainstNegativeOrZero(internalDiameter, nameof(internalDiameter));
@@ -35,12 +41,25 @@ public class CylindricalShell
         _fluidColumnPressure = fluidColumnPressure;
     }
     
-    public CylindricalShell(Pressure designPressure, Length internalDiameter, Pressure allowableStress, Length allowableCorrosion, double jointEfficiency, Density densityOfFluid, Length heightOfFluidColumn)
-        : this(designPressure, internalDiameter, allowableStress, allowableCorrosion, jointEfficiency, Pressure.FromPascals(densityOfFluid.KilogramsPerCubicMeter * heightOfFluidColumn.Meters * PhysicalConstants.StandardGravity.MetersPerSecondSquared))
+    public CylindricalShell(
+        Pressure designPressure, 
+        Length internalDiameter, 
+        Pressure allowableStress, 
+        Length allowableCorrosion, 
+        double jointEfficiency, 
+        Density densityOfFluid, 
+        Length heightOfFluidColumn)
+        : this(
+            designPressure, 
+            internalDiameter, 
+            allowableStress, 
+            allowableCorrosion, 
+            jointEfficiency, 
+            Pressure.FromPascals(densityOfFluid.KilogramsPerCubicMeter * heightOfFluidColumn.Meters * PhysicalConstants.StandardGravity.MetersPerSecondSquared))
     {
     }
 
-    public Length CalculateMinimumRequiredThickness() // ASME VIII: UG-27
+    public Length CalculateMinimumRequiredThickness() // ASME VIII Div. 1, UG-27
     {
         if (EffectivePressure >= _allowableStress * _jointEfficiency)
         {
