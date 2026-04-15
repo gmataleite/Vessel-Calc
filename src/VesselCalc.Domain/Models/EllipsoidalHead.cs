@@ -19,9 +19,6 @@ public class EllipsoidalHead
 
     public EllipsoidalHead(Pressure designPressure, Length internalDiameter, Pressure allowableStress, Length allowableCorrosion, double jointEfficiency, Pressure fluidColumnPressure, Length? headHeight = null, double? factorK = null)
     {
-        // TODO:[Business Rule] Validar se h > D.
-        // throw new ArgumentOutOfRangeException(nameof(headHeight), "Altura não pode ser maior que o diâmetro");
-
         Guard.AgainstNegativeOrZero(designPressure, nameof(designPressure));
         Guard.AgainstNegativeOrZero(internalDiameter, nameof(internalDiameter));
         Guard.AgainstNegativeOrZero(allowableStress, nameof(allowableStress));
@@ -66,6 +63,5 @@ public class EllipsoidalHead
         double H = headHeight.Millimeters;
         
         return (2.0 + Math.Pow(D / (2.0 * H), 2)) / 6;
-        
     }
 }

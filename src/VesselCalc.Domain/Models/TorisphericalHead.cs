@@ -17,7 +17,6 @@ public class TorisphericalHead
         
     private Pressure EffectivePressure => _designPressure + _fluidColumnPressure;
 
-// CONSTRUTOR 1: Tampo Customizado (Recebe L e r explicitamente)
     public TorisphericalHead(
         Pressure designPressure, 
         Length crownRadius, 
@@ -35,13 +34,10 @@ public class TorisphericalHead
         Guard.AgainstNegative(fluidColumnPressure, nameof(fluidColumnPressure));
         Guard.AgainstInvalidJointEfficiency(jointEfficiency, nameof(jointEfficiency));
 
-        // TODO: [Business Rule] Validar limites do ASME UG-32(e). 
-        // 1. O raio da junta (r) não pode ser menor que 6% do raio da coroa (L).
-        // 2. O raio da coroa (L) não pode exceder o diâmetro externo da saia do tampo.
-        /* if (knuckleRadius.Millimeters < 0.06 * crownRadius.Millimeters)
+        if (knuckleRadius.Millimeters < 0.06 * crownRadius.Millimeters)
             throw new ArgumentOutOfRangeException(nameof(knuckleRadius), "O raio da junta (r) não pode ser menor que 6% do raio da coroa (L) conforme UG-32(e).");
-        */
-        // 3. Implementar ratio = 0.1 (padrão)
+        if (knuckleRadius.Millimeters > 0.5 * crownRadius.Millimeters)
+            throw new ArgumentOutOfRangeException(nameof(knuckleRadius), "O raio da junta (r) não pode ser maior que 50% do raio da coroa (L) conforme UG-32(e).");
 
         _designPressure = designPressure;
         _crownRadius = crownRadius;
@@ -71,6 +67,12 @@ public class TorisphericalHead
             fluidColumnPressure)
     {
         Guard.AgainstNegativeOrZero(internalDiameter, nameof(internalDiameter));
+        Guard.AgainstNegativeOrZero(ratio, nameof(ratio));
+
+        if (ratio < 0.06)
+            throw new ArgumentOutOfRangeException(nameof(ratio), "O raio da junta (r) não pode ser menor que 6% do diâmetro interno (D) conforme UG-32(e).");
+        if (ratio > 0.5)            
+            throw new ArgumentOutOfRangeException(nameof(ratio), "O raio da junta (r) não pode ser maior que 50% do diâmetro interno (D) conforme UG-32(e).");
     }
 
     public Length CalculateMinimumRequiredThickness() // ASME VIII Div. 1, Appendix 1
@@ -86,10 +88,7 @@ public class TorisphericalHead
         return Length.FromMillimeters(thickness) + _allowableCorrosion;
     }
 
-    private double CalculateFactorM(Length crownRadius, Length knuckleRadius)
-    {
-
-        return (3.0 + Math.Sqrt(crownRadius / knuckleRadius)) / 4;
+    private double CalculateFactorM(Length crownRadius, Length knuckleRadius) =>
+        (3.0 + Math.Sqrt(crownRadius / knuckleRadius)) / 4;
         
-    }
 }
