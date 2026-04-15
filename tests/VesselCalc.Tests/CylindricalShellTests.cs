@@ -59,25 +59,6 @@ public class CylindricalShellTests
         Assert.Equal(expectedThicknessMillimeters, actualThickness.Millimeters, 3);
     }
 
-    [Fact]
-    public void CalculateMinimumRequiredThickness_PressureExceedsAllowableStress_ShouldThrowInvalidOperationException()
-    {
-        // Arrange: Condição de Ruptura onde P >= S * E (Fisicamente impossível sob teoria elástica)
-        var shell = new CylindricalShell(
-            designPressure: Pressure.FromMegapascals(150.0),
-            internalDiameter: Length.FromMillimeters(2000.0),
-            allowableStress: Pressure.FromMegapascals(138.0),
-            allowableCorrosion: Length.FromMillimeters(0),
-            jointEfficiency: 1.0,
-            fluidColumnPressure: Pressure.FromMegapascals(0)
-        );
-
-        // Act & Assert
-        var exception = Assert.Throws<InvalidOperationException>(() => shell.CalculateMinimumRequiredThickness());
-        Assert.Contains("P >= SE", exception.Message);
-    }
-
-
     public static IEnumerable<object[]> InvalidShellTestData => new List<object[]>
     {
         // CENÁRIO 1: Pressão Negativa (P < 0)

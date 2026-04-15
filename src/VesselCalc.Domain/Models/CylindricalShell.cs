@@ -61,11 +61,6 @@ public class CylindricalShell
 
     public Length CalculateMinimumRequiredThickness() // ASME VIII Div. 1, UG-27
     {
-        if (EffectivePressure >= _allowableStress * _jointEfficiency)
-        {
-            throw new InvalidOperationException("A pressão efetiva é maior ou igual à tensão admissível da junta (P >= SE). O dimensionamento por teoria elástica sob o ASME VIII Div. 1 é fisicamente impossível para estes parâmetros.");
-        }
-
         Length circumferentialThickness = CalculateThicknessForStressType(StressType.Circumferential);
         Length longitudinalThickness = CalculateThicknessForStressType(StressType.Longitudinal);
 

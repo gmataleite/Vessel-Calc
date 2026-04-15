@@ -6,7 +6,7 @@ Este documento rastreia os épicos planejados para a evolução do motor de cál
 - [x] Cascos Cilíndricos (UG-27 / App 1-2)
 - [x] Tampos Elipsoidais (UG-32 / App 1-4)
 - [x] Tampos Toro-esféricos (UG-32 / App 1-4)
-- [ ] Tampos Hemisféricos (UG-32 / App 1-3)
+- [x] Tampos Hemisféricos (UG-32 / App 1-3)
 
 ## Fase 2: Gestão de Materiais e Dados
 - [ ] Implementar base de dados relacional para ASME II-D (Tabela 1A)

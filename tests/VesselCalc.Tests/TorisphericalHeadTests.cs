@@ -40,7 +40,7 @@ public class TorisphericalHeadTests
     }
 
     [Fact]
-    public void CalculateMinimumRequiredThickness_RatioTen_ShouldReturnCorrectThickness()
+    public void CalculateMinimumRequiredThickness_DefaultRatioTen_ShouldReturnCorrectThickness()
     {        
         // CENÁRIO: Tampo Torisférico 10% sob pressão interna (ASME VIII Div.1, UG-32(c))
         // Arrange
