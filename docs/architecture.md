@@ -7,15 +7,16 @@ O **Vessel-Calc** utiliza a **Clean Architecture** para gerenciar a complexidade
 O repositório reflete as seguintes camadas:
 
 1.  **VesselCalc.Domain (Núcleo):**
-    * Contém as entidades de engenharia (`CylindricalShell`, `Head`, `Material`), *Value Objects* e interfaces estruturais.
+    * Contém as entidades de engenharia (`CylindricalShell`, `Head`, `Material`), *Value Objects* e interfaces estruturais (`IMaterialRepository`).
     * **Nenhuma dependência externa** (exceto a biblioteca `UnitsNet` para rigor dimensional).
     * Utiliza o padrão *Strategy* para alternar dinamicamente entre equações de cascos finos (UG-27) e cascos espessos (App 1-2).
 
 2.  **VesselCalc.Application (Casos de Uso):**
-    * Orquestra os fluxos do usuário. Contém os *Command/Query Handlers*, DTOs e interfaces para geração do memorial de cálculo e acesso a repositórios.
+    * Orquestra os fluxos do usuário. Contém os *Command/Query Handlers*, DTOs e serviços de cálculo que conectam os dados externos (como as tensões admissíveis) às equações do Domínio.
 
 3.  **VesselCalc.Infrastructure (Adaptadores Externos):**
-    * Implementa o acesso a dados via **Entity Framework Core** com provedor **PostgreSQL**.
+    * Implementa o acesso a dados via **Entity Framework Core** com provedor **SQL Server**.
+    * Gerencia a carga inicial de dados normativos (Data Seeding) a partir de arquivos estáticos (ASME Section II Part D).
     * Responsável pelas integrações com bibliotecas de geração de PDF (Memorial de Cálculo) e serviços de e-mail.
 
 4.  **VesselCalc.API (Apresentação Back-end):**
@@ -26,4 +27,4 @@ O repositório reflete as seguintes camadas:
 
 ## Fluxo de Geração do Memorial
 
-O Front-end envia um DTO com os parâmetros de entrada. A camada de `Application` busca os materiais necessários na `Infrastructure`, instancia as entidades no `Domain`, executa os métodos de cálculo (`CalculateMinimumRequiredThickness()`), gera um modelo de relatório em memória e delega a renderização do PDF para o gerador injetado na Infraestrutura.
+O Front-end envia um DTO com os parâmetros de entrada. A camada de `Application` busca os materiais e as tensões interpoladas na `Infrastructure`, instancia as entidades no `Domain`, executa os métodos de cálculo (`CalculateMinimumRequiredThickness()`), gera um modelo de relatório em memória e delega a renderização do PDF para o gerador injetado na Infraestrutura.
